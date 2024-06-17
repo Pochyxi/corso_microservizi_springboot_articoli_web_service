@@ -1,0 +1,33 @@
+#==========================================================
+#= Articoli Web Service - Versione Base
+#==========================================================
+server:
+  port: 5051
+
+spring:
+  logging:
+    level:
+      org.springframework: DEBUG
+  messages:
+    basename: messages
+  application:
+    name: ArticoliWebService
+  #==========================================================
+  #= PARAMETRI DBMS POSTGRESQL
+  #==========================================================
+  sql:
+    init:
+      mode: always
+      platform: postgres
+  datasource:
+    password: 123_Adiener
+    url: jdbc:postgresql://localhost:5433/shop
+    username: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
