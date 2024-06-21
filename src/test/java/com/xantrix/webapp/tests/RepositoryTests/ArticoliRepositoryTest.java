@@ -41,8 +41,8 @@ public class ArticoliRepositoryTest
 		
 		//CLASSE ENTITY ARTICOLI
 	Articoli articolo = new Articoli(
-				"50056665",
-				"Articolo di Test",
+				"500566655",
+				"ACQUA ULIVETO 15 LT",
 				"PZ",
 				"123",
 				6,
@@ -72,14 +72,14 @@ public class ArticoliRepositoryTest
 		
 		//CLASSE ENTITY ingredienti
 		Ingredienti ingredienti = new Ingredienti();
-		ingredienti.setCodArt("50056665");
+		ingredienti.setCodArt("500566655");
 		ingredienti.setInfo("Test inserimento ingredienti");
 		
 		articoliRepository.save(articolo);
 		
-		assertThat(articoliRepository.findByCodArt("50056665"))
+		assertThat(articoliRepository.findByCodArt("500566655"))
 			.extracting(Articoli::getDescrizione)
-			.isEqualTo("Articolo di Test");
+			.isEqualTo("ACQUA ULIVETO 15 LT");
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class ArticoliRepositoryTest
 	public void TestfindByDescrizioneLike()
 	{
 		List<Articoli> items = articoliRepository.selByDescrizioneLike("ACQUA ULIVETO%");
-		assertEquals(2, items.size());
+		assertEquals(3, items.size());
 	}
 	
 	@Test
@@ -103,7 +103,7 @@ public class ArticoliRepositoryTest
 	@Order(4)
 	public void TestfindByCodArt() throws Exception
 	{
-		assertThat(articoliRepository.findByCodArt("002000301"))
+		assertThat(articoliRepository.findByCodArt("500566655"))
 				.extracting(Articoli::getDescrizione)
 				.isEqualTo("ACQUA ULIVETO 15 LT");
 				
@@ -113,7 +113,7 @@ public class ArticoliRepositoryTest
 	@Order( 5 )
 	public void TestFindByBarcode()
 	{
-		assertThat(articoliRepository.selByEan("8008490000021"))
+		assertThat(articoliRepository.selByEan("12345678"))
 				.extracting(Articoli::getDescrizione)
 				.isEqualTo("ACQUA ULIVETO 15 LT");
 	}
@@ -125,9 +125,9 @@ public class ArticoliRepositoryTest
 	public void TestDelArt() throws Exception
 	{
 		
-		articoliRepository.delete(articoliRepository.findByCodArt("123Test"));
+		articoliRepository.delete(articoliRepository.findByCodArt("500566655"));
 		
-		assertThat(articoliRepository.findByCodArt("123Test")).isNull();
+		assertThat(articoliRepository.findByCodArt("500566655")).isNull();
 				
 	}
 }

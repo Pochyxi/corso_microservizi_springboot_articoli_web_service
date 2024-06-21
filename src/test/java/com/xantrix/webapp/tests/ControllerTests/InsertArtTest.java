@@ -52,7 +52,7 @@ public class InsertArtTest
 	
 	private final String JsonData =
 					"{\r\n"
-					+ "    \"codArt\": \"123Test\",\r\n"
+					+ "    \"codArt\": \"5001233434\",\r\n"
 					+ "    \"descrizione\": \"Articolo Unit Test Inserimento\",\r\n"
 					+ "    \"um\": \"PZ\",\r\n"
 					+ "    \"codStat\": \"TESTART\",\r\n"
@@ -67,7 +67,7 @@ public class InsertArtTest
 					+ "        }\r\n"
 					+ "    ],\r\n"
 					+ "    \"ingredienti\": {\r\n"
-					+ "		\"codArt\" : \"123Test\",\r\n"
+					+ "		\"codArt\" : \"5001233434\",\r\n"
 					+ "		\"info\" : \"TEST INGREDIENTI\"\r\n"
 					+ "	},\r\n"
 					+ "    \"iva\": {\r\n"
@@ -91,7 +91,7 @@ public class InsertArtTest
 				.andExpect(jsonPath("$.message").value("Inserimento Articolo Eseguito con successo!"))
 				.andDo(print());
 		
-		assertThat(articoliRepository.findByCodArt("123Test"))
+		assertThat(articoliRepository.findByCodArt("5001233434"))
 			.extracting(Articoli::getDescrizione)
 			.isEqualTo("Articolo Unit Test Inserimento");
 	}
@@ -106,13 +106,13 @@ public class InsertArtTest
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable())
 				.andExpect(jsonPath("$.code").value(406))
-				.andExpect(jsonPath("$.message").value("Articolo 123Test presente in anagrafica!"))
+				.andExpect(jsonPath("$.message").value("Articolo 5001233434 presente in anagrafica!"))
 				.andDo(print());
 	}
 	
 	String ErrJsonData =  
 					"{\r\n"
-					+ "    \"codArt\": \"123Test\",\r\n"
+					+ "    \"codArt\": \"5001233434\",\r\n"
 					+ "    \"descrizione\": \"\",\r\n" //<-- Descrizione Assente
 					+ "    \"um\": \"PZ\",\r\n"
 					+ "    \"codStat\": \"TESTART\",\r\n"
@@ -154,7 +154,7 @@ public class InsertArtTest
 	
 	private String JsonDataMod =  
 			"{\r\n"
-			+ "    \"codArt\": \"123Test\",\r\n"
+			+ "    \"codArt\": \"5001233434\",\r\n"
 			+ "    \"descrizione\": \"Articolo Unit Test Modifica\",\r\n"
 			+ "    \"um\": \"PZ\",\r\n"
 			+ "    \"codStat\": \"TESTART\",\r\n"
@@ -193,7 +193,7 @@ public class InsertArtTest
 				.andExpect(jsonPath("$.message").value("Modifica Articolo Eseguita con successo!"))
 				.andDo(print());
 		
-		assertThat(articoliRepository.findByCodArt("123Test"))
+		assertThat(articoliRepository.findByCodArt("5001233434"))
 			.extracting(Articoli::getDescrizione)
 			.isEqualTo("Articolo Unit Test Modifica");
 	}
@@ -202,11 +202,11 @@ public class InsertArtTest
 	@Order(5)
 	public void testDelArticolo() throws Exception
 	{
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/articoli/elimina/123Test")
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/articoli/elimina/5001233434")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.code").value("200 OK"))
-				.andExpect(jsonPath("$.message").value("Eliminazione Articolo 123Test Eseguita Con Successo"))
+				.andExpect(jsonPath("$.message").value("Eliminazione Articolo 5001233434 Eseguita Con Successo"))
 				.andDo(print());
 	}
 	

@@ -48,10 +48,10 @@ public class SelectArtTest
 	
 	String JsonData =  
 			"{\n" + 
-			"    \"codArt\": \"002000301\",\n" + 
+			"    \"codArt\": \"50056665\",\n" +
 			"    \"descrizione\": \"ACQUA ULIVETO 15 LT\",\n" + 
 			"    \"um\": \"PZ\",\n" + 
-			"    \"codStat\": \"\",\n" + 
+			"    \"codStat\": \"test\",\n" +
 			"    \"pzCart\": 6,\n" + 
 			"    \"pesoNetto\": 1.5,\n" + 
 			"    \"idStatoArt\": \"1\",\n" + 
@@ -84,13 +84,13 @@ public class SelectArtTest
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				 //articoli
 				.andExpect(jsonPath("$.codArt").exists())
-				.andExpect(jsonPath("$.codArt").value("002000301"))
+				.andExpect(jsonPath("$.codArt").value("50056665"))
 				.andExpect(jsonPath("$.descrizione").exists())
 				.andExpect(jsonPath("$.descrizione").value("ACQUA ULIVETO 15 LT"))
 				.andExpect(jsonPath("$.um").exists())
 				.andExpect(jsonPath("$.um").value("PZ"))
 				.andExpect(jsonPath("$.codStat").exists())
-				.andExpect(jsonPath("$.codStat").value(""))
+				.andExpect(jsonPath("$.codStat").value("test"))
 				.andExpect(jsonPath("$.pzCart").exists())
 				.andExpect(jsonPath("$.pzCart").value("6"))
 				.andExpect(jsonPath("$.pesoNetto").exists())
@@ -142,7 +142,7 @@ public class SelectArtTest
 	@Order(3)
 	public void listArtByCodArt() throws Exception
 	{
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/articoli/cerca/codice/002000301")
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/articoli/cerca/codice/50056665")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
