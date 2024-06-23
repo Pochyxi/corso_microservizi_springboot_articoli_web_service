@@ -41,7 +41,7 @@ public class ArticoliRepositoryTest
 		
 		//CLASSE ENTITY ARTICOLI
 	Articoli articolo = new Articoli(
-				"500566655",
+				"50056665500",
 				"ACQUA ULIVETO 15 LT",
 				"PZ",
 				"123",
@@ -72,12 +72,12 @@ public class ArticoliRepositoryTest
 		
 		//CLASSE ENTITY ingredienti
 		Ingredienti ingredienti = new Ingredienti();
-		ingredienti.setCodArt("500566655");
+		ingredienti.setCodArt("50056665500");
 		ingredienti.setInfo("Test inserimento ingredienti");
 		
 		articoliRepository.save(articolo);
 		
-		assertThat(articoliRepository.findByCodArt("500566655"))
+		assertThat(articoliRepository.findByCodArt("50056665500"))
 			.extracting(Articoli::getDescrizione)
 			.isEqualTo("ACQUA ULIVETO 15 LT");
 	}
@@ -103,7 +103,7 @@ public class ArticoliRepositoryTest
 	@Order(4)
 	public void TestfindByCodArt() throws Exception
 	{
-		assertThat(articoliRepository.findByCodArt("500566655"))
+		assertThat(articoliRepository.findByCodArt("50056665500"))
 				.extracting(Articoli::getDescrizione)
 				.isEqualTo("ACQUA ULIVETO 15 LT");
 				
@@ -125,9 +125,9 @@ public class ArticoliRepositoryTest
 	public void TestDelArt() throws Exception
 	{
 		
-		articoliRepository.delete(articoliRepository.findByCodArt("500566655"));
+		articoliRepository.delete(articoliRepository.findByCodArt("50056665500"));
 		
-		assertThat(articoliRepository.findByCodArt("500566655")).isNull();
+		assertThat(articoliRepository.findByCodArt("50056665500")).isNull();
 				
 	}
 }

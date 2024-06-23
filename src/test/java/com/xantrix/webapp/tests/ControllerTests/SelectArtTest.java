@@ -49,22 +49,22 @@ public class SelectArtTest
 	String JsonData =  
 			"{\n" + 
 			"    \"codArt\": \"50056665\",\n" +
-			"    \"descrizione\": \"ACQUA ULIVETO 15 LT\",\n" + 
+			"    \"descrizione\": \"ARTICOLO DI TEST\",\n" +
 			"    \"um\": \"PZ\",\n" + 
-			"    \"codStat\": \"test\",\n" +
+			"    \"codStat\": \"123\",\n" +
 			"    \"pzCart\": 6,\n" + 
-			"    \"pesoNetto\": 1.5,\n" + 
+			"    \"pesoNetto\": 1.75,\n" +
 			"    \"idStatoArt\": \"1\",\n" + 
-			"    \"dataCreazione\": \"2010-06-14\",\n" + 
+			"    \"dataCreazione\": \"2024-06-15\",\n" +
 			"    \"barcode\": [\n" + 
 			"        {\n" + 
-			"            \"barcode\": \"8008490000021\",\n" + 
+			"            \"barcode\": \"8008490000023\",\n" +
 			"            \"idTipoArt\": \"CP\"\n" + 
 			"        }\n" + 
 			"    ],\n" + 
 			"    \"famAssort\": {\n" + 
-			"        \"id\": 1,\n" + 
-			"        \"descrizione\": \"DROGHERIA ALIMENTARE\"\n" + 
+			"        \"id\": 10,\n" +
+			"        \"descrizione\": \"DROGHERIA CHIMICA\"\n" +
 			"    },\n" + 
 			"    \"ingredienti\": null,\n" + 
 			"    \"iva\": {\n" + 
@@ -78,7 +78,7 @@ public class SelectArtTest
 	@Order(1)
 	public void listArtByEan() throws Exception
 	{
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/articoli/cerca/barcode/8008490000021")
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/articoli/cerca/barcode/8008490000023")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -86,29 +86,29 @@ public class SelectArtTest
 				.andExpect(jsonPath("$.codArt").exists())
 				.andExpect(jsonPath("$.codArt").value("50056665"))
 				.andExpect(jsonPath("$.descrizione").exists())
-				.andExpect(jsonPath("$.descrizione").value("ACQUA ULIVETO 15 LT"))
+				.andExpect(jsonPath("$.descrizione").value("ARTICOLO DI TEST"))
 				.andExpect(jsonPath("$.um").exists())
 				.andExpect(jsonPath("$.um").value("PZ"))
 				.andExpect(jsonPath("$.codStat").exists())
-				.andExpect(jsonPath("$.codStat").value("test"))
+				.andExpect(jsonPath("$.codStat").value("123"))
 				.andExpect(jsonPath("$.pzCart").exists())
 				.andExpect(jsonPath("$.pzCart").value("6"))
 				.andExpect(jsonPath("$.pesoNetto").exists())
-				.andExpect(jsonPath("$.pesoNetto").value("1.5"))
+				.andExpect(jsonPath("$.pesoNetto").value("1.75"))
 				.andExpect(jsonPath("$.idStatoArt").exists())
 				.andExpect(jsonPath("$.idStatoArt").value("1"))
 				.andExpect(jsonPath("$.dataCreazione").exists())
-				.andExpect(jsonPath("$.dataCreazione").value("2010-06-14"))
+				.andExpect(jsonPath("$.dataCreazione").value("2024-06-15"))
 				 //barcode
 				.andExpect(jsonPath("$.barcode[0].barcode").exists())
-				.andExpect(jsonPath("$.barcode[0].barcode").value("8008490000021"))
+				.andExpect(jsonPath("$.barcode[0].barcode").value("8008490000023"))
 				.andExpect(jsonPath("$.barcode[0].idTipoArt").exists())
 				.andExpect(jsonPath("$.barcode[0].idTipoArt").value("CP")) 
 				 //famAssort
 				.andExpect(jsonPath("$.famAssort.id").exists())
-				.andExpect(jsonPath("$.famAssort.id").value("1")) 
+				.andExpect(jsonPath("$.famAssort.id").value("10"))
 				.andExpect(jsonPath("$.famAssort.descrizione").exists())
-				.andExpect(jsonPath("$.famAssort.descrizione").value("DROGHERIA ALIMENTARE")) 
+				.andExpect(jsonPath("$.famAssort.descrizione").value("DROGHERIA CHIMICA"))
 				 //ingredienti
 				.andExpect(jsonPath("$.ingredienti").isEmpty())
 				 //Iva
@@ -172,7 +172,7 @@ public class SelectArtTest
 	@Order(5)
 	public void listArtByDesc() throws Exception
 	{
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/articoli/cerca/descrizione/ACQUA ULIVETO 15 LT")
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/articoli/cerca/descrizione/Articolo di Test")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(1)))

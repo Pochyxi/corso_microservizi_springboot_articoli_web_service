@@ -90,7 +90,7 @@ public class ArticoliServiceImpl implements ArticoliService {
 
     @Override
     @Transactional
-    @Cacheable(value = "articolo", key = "#barcode", sync = true)
+    @Cacheable(value = "barcode", key = "#barcode", sync = true)
     public ArticoliDto SelByBarcode( String barcode ) {
         Articoli articoli = articoliRepository.selByEan( barcode );
 
