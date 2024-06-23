@@ -29,104 +29,100 @@ import java.util.stream.Collectors;
 @Log
 public class ArticoliServiceImpl implements ArticoliService {
 
-
+    // Iniezione delle dipendenze necessarie
     private final ArticoliRepository articoliRepository;
     private final ModelMapper modelMapper;
     private final CacheManager cacheManager;
 
-    private void EvictCache( Set<Barcode> Ean ) {
-        Ean.forEach( barcode -> {
-            log.info( "Eliminazione cache barcode " + barcode.getBarcode() );
-            Objects.requireNonNull( cacheManager.getCache( "barcode" ) ).evict( barcode.getBarcode() );
-        } );
-
+    // Metodo privato per eliminare la cache associata ai codici a barre
+    private void EvictCache(Set<Barcode> Ean) {
+        Ean.forEach(barcode -> {
+            log.info("Eliminazione cache barcode " + barcode.getBarcode());
+            Objects.requireNonNull(cacheManager.getCache("barcode")).evict(barcode.getBarcode());
+        });
     }
 
+    // Metodo per selezionare gli articoli per descrizione con supporto alla cache
     @Override
     @Cacheable
-    public List<ArticoliDto> SelByDescrizione( String descrizione, Pageable pageable ) {
+    public List<ArticoliDto> SelByDescrizione(String descrizione, Pageable pageable) {
         List<Articoli> articoli;
-
         String filter = "%" + descrizione.toUpperCase() + "%";
 
-        if( pageable != null ) {
-            articoli = articoliRepository.selByDescrizioneLike( filter, pageable );
+        if (pageable != null) {
+            articoli = articoliRepository.selByDescrizioneLike(filter, pageable);
         } else {
-            articoli = articoliRepository.selByDescrizioneLike( filter );
+            articoli = articoliRepository.selByDescrizioneLike(filter);
         }
 
-
-        List<ArticoliDto> retVal = articoli
-                .stream()
-                .map( source -> modelMapper.map( source, ArticoliDto.class ) )
-                .collect( Collectors.toList() );
-
-        return retVal;
+        return articoli.stream()
+                .map(source -> modelMapper.map(source, ArticoliDto.class))
+                .collect(Collectors.toList());
     }
 
+    // Metodo per selezionare un articolo per codice articolo con supporto alla cache
     @Override
     @Transactional
     @Cacheable(value = "articolo", key = "#codArt", sync = true)
-    public ArticoliDto SelByCodArt( String codArt ) {
-        Articoli articoli = this.SelByCodArt2( codArt );
-
-        return this.ConvertToDto( articoli );
+    public ArticoliDto SelByCodArt(String codArt) {
+        Articoli articoli = this.SelByCodArt2(codArt);
+        return this.ConvertToDto(articoli);
     }
 
+    // Metodo per selezionare un articolo per codice articolo senza caching
     @Override
-    public Articoli SelByCodArt2( String codArt ) {
-        return articoliRepository.findByCodArt( codArt );
+    public Articoli SelByCodArt2(String codArt) {
+        return articoliRepository.findByCodArt(codArt);
     }
 
-    private ArticoliDto ConvertToDto( Articoli articoli ) {
+    // Metodo privato per convertire un oggetto Articoli in ArticoliDto
+    private ArticoliDto ConvertToDto(Articoli articoli) {
         ArticoliDto articoliDto = null;
-
-        if( articoli != null ) {
-            articoliDto = modelMapper.map( articoli, ArticoliDto.class );
+        if (articoli != null) {
+            articoliDto = modelMapper.map(articoli, ArticoliDto.class);
         }
-
         return articoliDto;
     }
 
+    // Metodo per selezionare un articolo per barcode con supporto alla cache
     @Override
     @Transactional
     @Cacheable(value = "barcode", key = "#barcode", sync = true)
-    public ArticoliDto SelByBarcode( String barcode ) {
-        Articoli articoli = articoliRepository.selByEan( barcode );
-
-        return this.ConvertToDto( articoli );
+    public ArticoliDto SelByBarcode(String barcode) {
+        Articoli articoli = articoliRepository.selByEan(barcode);
+        return this.ConvertToDto(articoli);
     }
 
+    // Metodo per inserire un articolo con supporto alla cache
     @Override
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "articoli", allEntries = true),
-//            @CacheEvict( value = "barcode", key = "#articolo.barcode[0].barcode"),
             @CacheEvict(value = "articolo", key = "#articolo.codArt")
     })
-    public void InsArticolo( Articoli articolo ) {
-        articoliRepository.save( articolo );
-        EvictCache( articolo.getBarcode() );
+    public void InsArticolo(Articoli articolo) {
+        articoliRepository.save(articolo);
+        EvictCache(articolo.getBarcode());
     }
 
+    // Metodo per eliminare un articolo con supporto alla cache
     @Override
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "articoli", allEntries = true),
-//            @CacheEvict( value = "barcode", key = "#articolo.barcode[0].barcode"),
             @CacheEvict(value = "articolo", key = "#articolo.codArt")
     })
-    public void DelArticolo( Articoli articolo ) {
-        articoliRepository.delete( articolo );
+    public void DelArticolo(Articoli articolo) {
+        articoliRepository.delete(articolo);
     }
 
+    // Metodo per pulire tutte le cache
     @Override
     public void CleanCaches() {
         Collection<String> items = cacheManager.getCacheNames();
-
-        items.forEach( item -> {
-            log.info( "Cancellazione cache " + item );
-            Objects.requireNonNull( cacheManager.getCache( item ) ).clear();
-        } );
+        items.forEach(item -> {
+            log.info("Cancellazione cache " + item);
+            Objects.requireNonNull(cacheManager.getCache(item)).clear();
+        });
     }
 }

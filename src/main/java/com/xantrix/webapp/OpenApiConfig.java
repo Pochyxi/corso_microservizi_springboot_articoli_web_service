@@ -7,24 +7,27 @@ import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+// Indica che questa classe è una configurazione Spring
 @Configuration
 public class OpenApiConfig {
-    //  http://localhost:5051/swagger-ui/index.html
+    // URL per accedere all'interfaccia Swagger UI
+    // http://localhost:5051/swagger-ui/index.html
 
+    // Configura un bean per OpenAPI
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Articoli Web Service API")
-                        .description("Spring Boot RESTful service for Articoli")
-                        .termsOfService("terms")
+                        .title("Articoli Web Service API") // Titolo dell'API
+                        .description("Spring Boot RESTful service for Articoli") // Descrizione dell'API
+                        .termsOfService("terms") // Termini di servizio
                         .contact(new Contact()
-                                .email("adienerlopez@gmail.com")
-                                .name("Adiener Lopez"))
+                                .email("adienerlopez@gmail.com") // Email di contatto
+                                .name("Adiener Lopez")) // Nome di contatto
                         .license(new License()
-                                .name("Apache 2.0")
-                                .url("http://springdoc.org"))
-                        .version("1.0")
+                                .name("Apache 2.0") // Nome della licenza
+                                .url("http://springdoc.org")) // URL della licenza
+                        .version("1.0") // Versione dell'API
                 );
     }
 }

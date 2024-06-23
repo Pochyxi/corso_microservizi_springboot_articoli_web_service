@@ -24,55 +24,47 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest()
-@ContextConfiguration(classes = Application.class)
-@TestMethodOrder(OrderAnnotation.class)
-public class TestSecurityRoleUser
-{
-	private MockMvc mockMvc;
-	
-	@Autowired
-	private WebApplicationContext wac;
-	
-	@BeforeEach
-	public void setup()
-	{
-		this.mockMvc = MockMvcBuilders
-				.webAppContextSetup(wac)
-				.defaultRequest(get("/")
-				.with(user("Nicola").roles("USER"))) //Attivato Ruolo User
-				.apply(springSecurity()) //Attiva la sicurezza
-				.build();
+@SpringBootTest // Indica che si tratta di un test Spring Boot
+@ContextConfiguration(classes = Application.class) // Configura il contesto per l'applicazione
+@TestMethodOrder(OrderAnnotation.class) // Ordina i test secondo l'annotazione @Order
+public class TestSecurityRoleUser {
 
+	private MockMvc mockMvc;
+
+	@Autowired
+	private WebApplicationContext wac; // Contesto dell'applicazione web
+
+	@BeforeEach // Metodo da eseguire prima di ogni test
+	public void setup() {
+		this.mockMvc = MockMvcBuilders
+				.webAppContextSetup(wac) // Configura MockMvc con il contesto dell'applicazione web
+				.defaultRequest(get("/")
+						.with(user("Nicola").roles("USER"))) // Imposta il contesto di sicurezza per l'utente Nicola con ruolo USER
+				.apply(springSecurity()) // Attiva la sicurezza
+				.build();
 	}
-	
-	private final String ApiBaseUrl = "/api/articoli";
-	
-	
-	
+
+	private final String ApiBaseUrl = "/api/articoli"; // Base URL per l'API degli articoli
+
 	@Order(1)
 	@Test
-	public void testListArtByCodArt() throws Exception
-	{
+	public void testListArtByCodArt() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get(ApiBaseUrl + "/cerca/codice/5002000301")
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()) // Verifica che la risposta sia 200 OK
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-				.andExpect(content().json(JsonData.GetArtData())) 
+				.andExpect(content().json(JsonData.GetArtData())) // Verifica che la risposta JSON sia corretta
 				.andReturn();
 	}
-	
+
 	@Order(2)
 	@Test
-	public void testErrRoleInsArticolo() throws Exception
-	{
+	public void testErrRoleInsArticolo() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post(ApiBaseUrl + "/inserisci")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(JsonData.GetTestArtData())
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isForbidden()) //Non sei autorizzato ad usare l'endpoint 
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(JsonData.GetTestArtData()) // Dati JSON per il test
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isForbidden()) // Verifica che la risposta sia 403 Forbidden
 				.andDo(print());
 	}
-
-	
 }

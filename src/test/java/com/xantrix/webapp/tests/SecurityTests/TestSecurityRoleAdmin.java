@@ -2,7 +2,6 @@ package com.xantrix.webapp.tests.SecurityTests;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,69 +28,60 @@ import org.springframework.web.context.WebApplicationContext;
 
 
 
-@SpringBootTest()
-@ContextConfiguration(classes = Application.class)
-@TestMethodOrder(OrderAnnotation.class)
-public class TestSecurityRoleAdmin
-{
+@SpringBootTest // Indica che si tratta di un test Spring Boot
+@ContextConfiguration(classes = Application.class) // Configura il contesto per l'applicazione
+@TestMethodOrder(OrderAnnotation.class) // Ordina i test secondo l'annotazione @Order
+public class TestSecurityRoleAdmin {
+
     private MockMvc mockMvc;
 
     @Autowired
-    private WebApplicationContext wac;
+    private WebApplicationContext wac; // Contesto dell'applicazione web
 
-    @BeforeEach
-    public void setup()
-    {
+    @BeforeEach // Metodo da eseguire prima di ogni test
+    public void setup() {
         this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(wac)
-                .defaultRequest(get("/")
-                        .with(user("Admin").roles("ADMIN"))) //Ruoli Attivati
-                .apply(springSecurity()) //Attiva la sicurezza
+                .webAppContextSetup(wac) // Configura MockMvc con il contesto dell'applicazione web
+                .defaultRequest(MockMvcRequestBuilders.get("/")
+                        .with(user("Admin").roles("ADMIN"))) // Imposta il contesto di sicurezza per l'utente Admin con ruolo ADMIN
+                .apply(springSecurity()) // Attiva la sicurezza
                 .build();
-
     }
 
-    private String ApiBaseUrl = "/api/articoli";
+    private final String ApiBaseUrl = "/api/articoli"; // Base URL per l'API degli articoli
 
     @Order(1)
     @Test
-    public void testListArtByCodArt() throws Exception
-    {
+    public void testListArtByCodArt() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(ApiBaseUrl + "/cerca/codice/5002000301")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()) // Verifica che la risposta sia 200 OK
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(JsonData.GetArtData()))
+                .andExpect(content().json(JsonData.GetArtData())) // Verifica che la risposta JSON sia corretta
                 .andReturn();
     }
 
-
     @Order(2)
     @Test
-    public void testInsArticolo() throws Exception
-    {
+    public void testInsArticolo() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(ApiBaseUrl + "/inserisci")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonData.GetTestArtData())
+                        .content(JsonData.GetTestArtData()) // Dati JSON per il test
                         .accept(MediaType.APPLICATION_JSON))
-
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data").value(LocalDate.now().toString()))
-                .andExpect(jsonPath("$.message").value("Inserimento Articolo Eseguito con successo!"))
-
+                .andExpect(status().isCreated()) // Verifica che la risposta sia 201 Created
+                .andExpect(jsonPath("$.data").value(LocalDate.now().toString())) // Verifica che la data nella risposta sia quella attuale
+                .andExpect(jsonPath("$.message").value("Inserimento Articolo Eseguito con successo!")) // Verifica il messaggio di successo
                 .andDo(print());
     }
 
     @Order(3)
     @Test
-    public void testDelArticolo() throws Exception
-    {
+    public void testDelArticolo() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete(ApiBaseUrl + "/elimina/500123111")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200 OK"))
-                .andExpect(jsonPath("$.message").value("Eliminazione Articolo 500123111 Eseguita Con Successo"))
+                .andExpect(status().isOk()) // Verifica che la risposta sia 200 OK
+                .andExpect(jsonPath("$.code").value("200 OK")) // Verifica il codice di successo nella risposta
+                .andExpect(jsonPath("$.message").value("Eliminazione Articolo 500123111 Eseguita Con Successo")) // Verifica il messaggio di successo
                 .andDo(print());
     }
-
 }
