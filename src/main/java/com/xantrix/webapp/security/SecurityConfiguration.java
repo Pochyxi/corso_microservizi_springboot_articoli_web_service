@@ -1,8 +1,11 @@
 package com.xantrix.webapp.security;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,10 +19,14 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 // Abilita la configurazione della sicurezza web
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     // Nome del realm utilizzato per l'autenticazione
     private static final String REALM = "REAME";
+
+    @Qualifier("customUserDetailsService")
+    private final UserDetailsService userDetailsService;
 
     // Definisce un bean per l'encoder delle password utilizzando BCrypt
     @Bean
@@ -28,7 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     // Definisce un bean per il servizio UserDetailsService che gestisce gli utenti in memoria
-    @Bean
+    /*@Bean
     @Override
     public UserDetailsService userDetailsService() {
         // Crea un costruttore di utenti
@@ -55,6 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         return manager;
     }
+     */
 
     // Definisce le URL protette solo per gli admin
     private static final String[] ADMIN_MATCHER = {"/api/articoli/inserisci/**", "/api/articoli/elimina/**", "/api/articoli/modifica/**"};
@@ -71,6 +79,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint()) // Configura l'autenticazione Basic con il realm specificato
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Configura la gestione della sessione come stateless
+    }
+
+    public final void configureGlobal( AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     // Definisce un bean per il punto di ingresso dell'autenticazione
