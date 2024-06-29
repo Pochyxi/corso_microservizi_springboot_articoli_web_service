@@ -118,6 +118,13 @@
 			<artifactId>hazelcast-all</artifactId>
 			<version>4.2.8</version>
 		</dependency>
+
+		<!-- JWT -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>

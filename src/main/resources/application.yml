@@ -2,7 +2,15 @@
 #= Articoli Web Service - Versione Base
 #==========================================================
 server:
-  port: 5051
+  port: 5443
+# ==============================================================
+# = Impostazioni ssl
+# ==============================================================
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: classpath:certificato.p12
+    key-store-password: 123_Stella
 
 spring:
   logging:
@@ -38,4 +46,18 @@ gestuser:
   srvUrl: http://localhost:8019/api/utenti/cerca/userid/
   userId: ReadUser
   password: 123Stella
+
+#==========================================================
+# - Parametri Sicurezza JWT
+#==========================================================
+sicurezza:
+  header: Authorization
+  secret: $123_Stella@adiener.it$
+
+#==========================================================
+# - Livello Log di Sicurezza
+#==========================================================
+logging:
+  level:
+    org.springframework.security: DEBUG
 

@@ -3,7 +3,6 @@ package com.xantrix.webapp.security;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +13,10 @@ import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * Servizio personalizzato per il caricamento dei dettagli utente.
+ * Implementa UserDetailsService per integrare con Spring Security.
+ */
 @Service("customUserDetailsService")
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -22,65 +25,65 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserConfig config;
 
+    /**
+     * Carica i dettagli dell'utente dato lo username.
+     *
+     * @param userId Lo username dell'utente da caricare
+     * @return Un oggetto UserDetails contenente i dettagli dell'utente
+     * @throws UsernameNotFoundException Se l'utente non viene trovato o se lo username non è valido
+     */
     @Override
-    public UserDetails loadUserByUsername( String userId ) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        String errMsg;
 
-        String ErrMsg = "";
-
-        if( userId == null || userId.length()  < 2 ) {
-            ErrMsg = "Nome utente assente o non valido";
-
-            logger.warn(ErrMsg);
-
-            throw new UsernameNotFoundException(ErrMsg);
+        if (userId == null || userId.length() < 2) {
+            errMsg = "Nome utente assente o non valido";
+            logger.warn(errMsg);
+            throw new UsernameNotFoundException(errMsg);
         }
 
-        Utenti utente = this.GetHttpValue(userId);
+        Utenti utente = this.getHttpValue(userId);
 
-        if( utente == null ) {
-            ErrMsg = String.format("Utente %s non Trovato!!", userId);
-
-            logger.warn(ErrMsg);
-
-            throw new UsernameNotFoundException(ErrMsg);
+        if (utente == null) {
+            errMsg = String.format("Utente %s non Trovato!!", userId);
+            logger.warn(errMsg);
+            throw new UsernameNotFoundException(errMsg);
         }
 
-        User.UserBuilder builder = null;
-        builder = org.springframework.security.core.userdetails.User.withUsername(utente.getUserId());
-        builder.disabled((!utente.getAttivo().equals( "Si" )));
-        builder.password(utente.getPassword());
-
-        String[] profili = utente.getRuoli()
-                .stream().map(a -> "ROLE_" + a).toArray(String[]::new);
-
-        builder.authorities(profili);
-
-        return builder.build();
+        // Costruisce l'oggetto UserDetails
+        return org.springframework.security.core.userdetails.User.withUsername(utente.getUserId())
+                .disabled(!utente.getAttivo().equals("Si"))
+                .password(utente.getPassword())
+                .authorities(utente.getRuoli().stream().map(a -> "ROLE_" + a).toArray(String[]::new))
+                .build();
     }
 
-    private Utenti GetHttpValue(String UserId) {
+    /**
+     * Recupera i dettagli dell'utente da un servizio HTTP esterno.
+     *
+     * @param userId Lo username dell'utente da recuperare
+     * @return Un oggetto Utenti contenente i dettagli dell'utente, o null se non trovato
+     */
+    private Utenti getHttpValue(String userId) {
         URI url = null;
 
         try {
-            String SrvUrl = config.getSrvUrl();
-
-            url = new URI(SrvUrl + UserId);
-        } catch( URISyntaxException e ) {
-            e.printStackTrace();
+            String srvUrl = config.getSrvUrl();
+            url = new URI(srvUrl + userId);
+        } catch (URISyntaxException e) {
+            logger.error("Errore nella creazione dell'URI", e);
+            return null;
         }
 
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getInterceptors().add( new BasicAuthenticationInterceptor(config.getUserId(), config.getPassword()) );
-
-        Utenti utente = null;
+        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(config.getUserId(), config.getPassword()));
 
         try {
-            utente = restTemplate.getForObject(url, Utenti.class);
-        } catch( Exception e ) {
-            String ErrMsg = "Connessone al Server: " + url.toString() + " Fallita!!";
-            logger.warn(ErrMsg);
+            return restTemplate.getForObject(url, Utenti.class);
+        } catch (Exception e) {
+            String errMsg = "Connessione al Server: " + url + " Fallita!!";
+            logger.warn(errMsg, e);
+            return null;
         }
-
-        return utente;
     }
 }
