@@ -1,36 +1,44 @@
 #==========================================================
 #= Articoli Web Service - Versione Base
 #==========================================================
+
+# Configurazione del server
 server:
   port: 5443
-# ==============================================================
-# = Impostazioni ssl
-# ==============================================================
+  # Configurazione SSL
   ssl:
     enabled: true
     key-store-type: PKCS12
     key-store: classpath:certificato.p12
     key-store-password: 123_Stella
 
+# Configurazione Spring
 spring:
+  # Configurazione logging
   logging:
     level:
       org.springframework: DEBUG
+  # Configurazione messaggi
   messages:
     basename: messages
+  # Nome dell'applicazione
   application:
     name: ArticoliWebService
+
   #==========================================================
   #= PARAMETRI DBMS POSTGRESQL
   #==========================================================
+  # Inizializzazione SQL
   sql:
     init:
       mode: always
       platform: postgres
+  # Configurazione del datasource
   datasource:
     password: 123_Adiener
     url: jdbc:postgresql://localhost:5433/shop
     username: postgres
+  # Configurazione JPA
   jpa:
     hibernate:
       ddl-auto: none
@@ -40,7 +48,7 @@ spring:
     show-sql: true
 
 #==========================================================
-#Opzioni di Accesso Servizio gestuser
+# Opzioni di Accesso Servizio gestuser
 #==========================================================
 gestuser:
   srvUrl: http://localhost:8019/api/utenti/cerca/userid/
@@ -60,4 +68,3 @@ sicurezza:
 logging:
   level:
     org.springframework.security: DEBUG
-
