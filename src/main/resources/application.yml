@@ -14,10 +14,6 @@ server:
 
 # Configurazione Spring
 spring:
-  # Configurazione logging
-  logging:
-    level:
-      org.springframework: DEBUG
   # Configurazione messaggi
   messages:
     basename: messages
@@ -47,6 +43,39 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
+
+#==========================================================
+#= Parametri Attuatore
+#==========================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,metrics"
+  endpoint:
+    health:
+      show-details: WHEN_AUTHORIZED
+
+#==========================================================
+# = Proprietà Livello Log
+# = Default ERROR, WARN, INFO
+# = Levels: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
+#==========================================================
+logging:
+  file:
+    name: './logs/ArtSrv.log'
+    max-size: 1MB
+    #path: /logs
+  pattern:
+    file: "%d{dd-MM-yyyy } [%thread] %-5level %logger{36} - %msg%n"
+    #console: "%d{dd-MM-yyyy HH:mm:s} - %msg%n"
+  level:
+    root: INFO
+    org.springframework.security: DEBUG
+    org.hibernate: INFO
+    org.springframework.web: INFO
+    com.xantrix.webapp.controllers: INFO
+
 #==========================================================
 # Opzioni di Accesso Servizio gestuser
 #==========================================================
@@ -61,10 +90,3 @@ gestuser:
 sicurezza:
   header: Authorization
   secret: $123_Stella@adiener.it$
-
-#==========================================================
-# - Livello Log di Sicurezza
-#==========================================================
-logging:
-  level:
-    org.springframework.security: DEBUG
