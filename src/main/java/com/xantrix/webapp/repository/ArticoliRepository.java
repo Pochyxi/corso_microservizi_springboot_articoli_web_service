@@ -2,6 +2,7 @@ package com.xantrix.webapp.repository;
 
 
 import com.xantrix.webapp.entities.Articoli;
+import io.micrometer.core.lang.NonNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -11,6 +12,9 @@ import java.util.List;
 
 // Interfaccia del repository per la gestione delle operazioni di persistenza degli articoli
 public interface ArticoliRepository extends PagingAndSortingRepository<Articoli, String> {
+
+    @NonNull
+    List<Articoli> findAll();
 
     // Metodo per trovare un articolo in base al codice articolo
     Articoli findByCodArt(String codArt);

@@ -48,6 +48,14 @@ spring:
 #= Parametri Attuatore
 #==========================================================
 management:
+  info:
+    env:
+      enabled: true
+    git:
+      enabled: true
+      mode: full
+    build:
+      enabled: true
   endpoints:
     web:
       exposure:
@@ -64,7 +72,6 @@ management:
 logging:
   file:
     name: './logs/ArtSrv.log'
-    max-size: 1MB
     #path: /logs
   pattern:
     file: "%d{dd-MM-yyyy } [%thread] %-5level %logger{36} - %msg%n"
@@ -75,6 +82,9 @@ logging:
     org.hibernate: INFO
     org.springframework.web: INFO
     com.xantrix.webapp.controllers: INFO
+  logback:
+    rollingpolicy:
+      max-file-size: 1MB
 
 #==========================================================
 # Opzioni di Accesso Servizio gestuser
@@ -90,3 +100,4 @@ gestuser:
 sicurezza:
   header: Authorization
   secret: $123_Stella@adiener.it$
+
