@@ -26,7 +26,7 @@ public class ArtInfoContributor implements InfoContributor {
 
     @Override
     public void contribute( Info.Builder builder ) {
-        long quantitaArticoli = articoliRepository.findAll().size();
+        long quantitaArticoli = articoliRepository.count();
 
         //OGGETTO PRINCIPALE INFO
         Map<String, Object> info = new HashMap<>();
